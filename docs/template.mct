@@ -1,0 +1,48 @@
+-- This is a comment
+
+COMMON_CODE 
+{
+    <CODE USED IN ALL TESTS GOES HERE>
+}
+
+TEST("<TEST_TITLE>")
+{
+    ENVIRONMENT <NAME> 
+    {
+        VAR <COMMON_VAR>, IN = <VALUE>
+    }
+
+    TEST_CASE("<TEST CASE TITLE>") USING <ENVIRONMENT_NAME_1>, <ENVIRONMENT_NAME_2> ...
+    {
+        DESCRIPTION = "<TEST CASE DESCRIPTION WHICH WORKS
+                        FOR MULTIPLE LINES>"
+        STEPS = <NUMBER>
+        VAR <VAR_NAME>
+        {
+            IN = [<N1>,<N2>, ...],
+            OUT = [<M1>,<M2>, ...],
+            DELTA = <O>
+        }
+        STR <STR_NAME>
+        {
+            IN = [<STR1>, <STR2>, ...]
+            OUT = [<STR3, <STR4>, ...]
+        }
+        ...
+        PRE_TEST_CODE
+        {
+            <CODE THAT RUNS BEFORE SETTING THE INPUTS GOES HERE>
+        }
+        TEST_CODE 
+        {
+            <THE TEST CODE>
+        }
+        POST_TEST_CODE
+        {
+            <CODE THAT RUNS AFTER CHECKING THE OUTPUTS GOES HERE>
+        }
+    }
+    ...
+}
+
+...

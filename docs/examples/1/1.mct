@@ -1,0 +1,56 @@
+-- This is a comment
+
+COMMON_CODE
+{
+    int global_a;
+    int global_b;
+    int global_c;
+    char global_d[100];
+}
+
+TEST("Test title")
+{
+    ENVIRONMENT TEST_ENV
+    {
+        VAR global_a
+        {
+            IN = 5
+        }
+    }
+    ENVIRONMENT TEST_ENV_2
+    {
+        VAR global_b
+        {
+            IN = 6
+        }
+    }
+    TEST_CASE("Testing ceva") USING TEST_ENV, TEST_ENV_2
+    {
+        DESCRIPTION = "Testing ceva
+        foarte interesant"
+        STEPS = 2
+        VAR global_c
+        {
+            IN = [1, 2]
+            OUT = [2, 3]
+            DELTA = 1.5
+        }
+        STR global_d
+        {
+            IN = ["TEST", "TEST"]
+            OUT = ["TEST1", "TEST3"]
+        }
+        PRE_TEST_CODE
+        {
+            global_a++;
+        }
+        TEST_CODE
+        {
+            func(global_a, global_b);
+        }
+        POST_TEST_CODE
+        {
+            global_c = 5;
+        }
+    }
+}
