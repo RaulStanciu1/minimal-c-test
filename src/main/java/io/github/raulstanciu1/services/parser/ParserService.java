@@ -1,10 +1,10 @@
 package io.github.raulstanciu1.services.parser;
 
 
-import io.github.raulstanciu1.models.Test;
-import io.github.raulstanciu1.models.TestCase;
-import io.github.raulstanciu1.models.TestProject;
-import io.github.raulstanciu1.services.ProjectEnvironment;
+import io.github.raulstanciu1.models.test.Test;
+import io.github.raulstanciu1.models.test.TestCase;
+import io.github.raulstanciu1.models.test.TestProject;
+import io.github.raulstanciu1.models.ProjectEnvironment;
 import io.github.raulstanciu1.services.parser.generated.MCTLexer;
 import io.github.raulstanciu1.services.parser.generated.MCTParser;
 import org.antlr.v4.runtime.CharStream;
@@ -41,7 +41,7 @@ public class ParserService {
     public static void parseMctFile() throws IOException{
         ProjectEnvironment environment = ProjectEnvironment.getInstance();
         List<String> cCodeList = new ArrayList<>();
-        String fileContent = PreprocessService.preprocessMctFile(environment.getSourcePaths().getMctFilePath(), cCodeList);
+        String fileContent = PreprocessService.preprocessMctFile(environment.getMctFilePath(), cCodeList);
         CharStream stream = CharStreams.fromString(fileContent);
 
         MCTLexer lexer = new MCTLexer(stream);

@@ -6,6 +6,8 @@
 #include <string.h>
 #include <math.h>
 
+#define const
+
 FILE* ___mct_fptr___;
 
 static inline int ___mct_setup(char* file)

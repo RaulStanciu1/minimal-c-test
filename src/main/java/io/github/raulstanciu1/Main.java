@@ -1,7 +1,9 @@
 package io.github.raulstanciu1;
 
 import io.github.raulstanciu1.exceptions.*;
+import io.github.raulstanciu1.models.ProjectEnvironment;
 import io.github.raulstanciu1.models.results.TestResults;
+import io.github.raulstanciu1.models.results.TestResultsOverview;
 import io.github.raulstanciu1.services.*;
 import io.github.raulstanciu1.services.parser.ParserService;
 import org.apache.commons.cli.*;
@@ -40,7 +42,11 @@ public class Main {
             ArgValidator.validateArgs(sourceFile, cFiles);
 
             ProjectEnvironment projectEnvironment = ProjectEnvironment.getInstance();
-            projectEnvironment.setupEnvironment(sourceFile, cFiles);
+            projectEnvironment.setMctFilePath(PathProvider.getMctFilePath(sourceFile));
+            projectEnvironment.setCFilePaths(PathProvider.getCFilePaths(cFiles));
+            projectEnvironment.setCompiler(CompilerLocator.getAvailableCCompiler());
+
+            WorkspaceInitializer.initializeWorkspace();
 
             ParserService.parseMctFile();
             TestGenerator.generateTestFiles();
@@ -57,10 +63,11 @@ public class Main {
                 throw new InvalidEnvironmentException("No test results were generated. Please check your MCT file and C files.");
             }
 
-            TestResultsLogger.logTestResults(testResultsList);
+            TestResultsOverview testResultsOverview = TestResultsOverviewGenerator.generateTestResultsOverview(testResultsList);
 
+            ReportGenerator.generateReportPdf(testResultsOverview);
 
-            projectEnvironment.cleanup();
+            WorkspaceCleaner.cleanWorkspace();
 
         } catch (ParseException e) {
             HelpFormatter formatter = new HelpFormatter();

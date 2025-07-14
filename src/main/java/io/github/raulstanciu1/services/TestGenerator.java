@@ -1,7 +1,8 @@
 package io.github.raulstanciu1.services;
 
 import io.github.raulstanciu1.exceptions.InvalidEnvironmentException;
-import io.github.raulstanciu1.models.*;
+import io.github.raulstanciu1.models.ProjectEnvironment;
+import io.github.raulstanciu1.models.test.*;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -14,13 +15,8 @@ public class TestGenerator {
 
     public static void generateTestFiles() throws IOException, InvalidEnvironmentException {
         ProjectEnvironment pe = ProjectEnvironment.getInstance();
-        Path tmpDirPath = pe.getSourcePaths().getTempDirPath();
-        outputDirectoryPath = tmpDirPath.resolve("out");
-        pe.setOutputDirectory(outputDirectoryPath);
-        Files.createDirectories(outputDirectoryPath);
-        Files.createDirectories(outputDirectoryPath.resolve("res"));
+        outputDirectoryPath = pe.getOutputDirectory();
         testProject = pe.getTestProject();
-        copySourceFiles(tmpDirPath, outputDirectoryPath);
         generateCommonHeaderFile();
         TestProject tp = ProjectEnvironment.getInstance().getTestProject();
         for(int i = 0; i < tp.getTests().size(); i++){
@@ -34,16 +30,7 @@ public class TestGenerator {
         insertTestCaseCalls();
     }
 
-    private static void copySourceFiles(Path srcDir, Path targetDir) throws IOException{
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(srcDir, "*.c")) {
-            for (Path file : stream) {
-                if (Files.isRegularFile(file)) {
-                    Path destinationFile = targetDir.resolve(file.getFileName());
-                    Files.copy(file, destinationFile, StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-        }
-    }
+
 
     private static void generateCommonHeaderFile() throws IOException {
         Path commonHeaderPath = outputDirectoryPath.resolve("___mct_common_src___.h");
@@ -172,7 +159,7 @@ public class TestGenerator {
     private static void replaceKeyWords() throws IOException{
         Path mctCFile = outputDirectoryPath.resolve("___mct___.c");
         String fileContents = Files.readString(mctCFile);
-        int srcFilesNbr = ProjectEnvironment.getInstance().getSourcePaths().getCFilePaths().size();
+        int srcFilesNbr = ProjectEnvironment.getInstance().getCFilePaths().size();
         //Replace the number of tests
         fileContents = Utils.replaceWord(fileContents,"___MCT__TEST__N___",String.valueOf(testProject.getTests().size()));
 

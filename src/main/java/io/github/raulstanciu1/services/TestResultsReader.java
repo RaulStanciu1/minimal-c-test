@@ -1,11 +1,9 @@
 package io.github.raulstanciu1.services;
 
 
-import io.github.raulstanciu1.models.Test;
-import io.github.raulstanciu1.models.results.TestResult;
-import io.github.raulstanciu1.models.results.TestResults;
-import io.github.raulstanciu1.models.results.TestResultsCase;
-import io.github.raulstanciu1.models.results.TestResultsStep;
+import io.github.raulstanciu1.models.ProjectEnvironment;
+import io.github.raulstanciu1.models.results.*;
+import io.github.raulstanciu1.models.test.Test;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -25,30 +23,30 @@ public class TestResultsReader {
                 throw new IOException("Test results were not created: Test ID " + i);
             }
             Test test = pe.getTestProject().getTests().get(i);
-            TestResults testResults = new TestResults(i, new ArrayList<>());
+            TestResults testResults = new TestResults(test.getTitle());
             for(int j = 0; j < test.getTestCases().size(); j++){
                 Path testCaseFile = testDir.resolve("___mct_tc_"+j+"_res.txt");
                 if(!testCaseFile.toFile().exists()) {
                     throw new IOException("Test results were not created: Test ID " + i + ", Test Case ID " + j);
                 }
-                TestResultsCase testResultsCase = new TestResultsCase(j, new ArrayList<>());
+                TestResultsCase testResultsCase = new TestResultsCase(test.getTestCases().get(j).getTitle());
                 List<String> testCaseTextContent = Files.readAllLines(testCaseFile);
                 int testStepId = -1;
-                List<TestResult> testResultsStepList = null;
+                TestResultsStep testResultsStep = null;
                 for(String line : testCaseTextContent){
                     String[] words = line.split(" ");
                     if(words[0].equals("MCT_BEGIN_STEP")){
                         testStepId = Integer.parseInt(words[1]);
-                        testResultsStepList = new ArrayList<>();
+                        testResultsStep = new TestResultsStep(testStepId);
                     } else if(words[0].equals("MCT_END_STEP")){
-                        testResultsCase.testResultsSteps().add(new TestResultsStep(testStepId, testResultsStepList));
+                        testResultsCase.getTestResultsSteps().add(testResultsStep);
                         testStepId = -1;
-                        testResultsStepList = null;
+                        testResultsStep = null;
                     } else {
                         if(testStepId == -1) {
                             throw new IOException("Invalid test results received by test process for Test ID " + i + ", Test Case ID " + j);
                         }
-                        testResultsStepList.add(new TestResult(
+                        testResultsStep.getTestResults().add(new TestResult(
                                 words[0],
                                 words[1].equals("1"),
                                 words[2],
@@ -56,7 +54,7 @@ public class TestResultsReader {
                         ));
                     }
                 }
-                testResults.testResultsCases().add(testResultsCase);
+                testResults.getTestResultsCases().add(testResultsCase);
             }
             testResultsList.add(testResults);
         }

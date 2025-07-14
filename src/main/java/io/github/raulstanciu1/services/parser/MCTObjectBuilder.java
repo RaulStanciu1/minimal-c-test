@@ -1,6 +1,6 @@
 package io.github.raulstanciu1.services.parser;
 
-import io.github.raulstanciu1.models.*;
+import io.github.raulstanciu1.models.test.*;
 import io.github.raulstanciu1.services.Utils;
 import io.github.raulstanciu1.services.parser.generated.MCTBaseVisitor;
 import io.github.raulstanciu1.services.parser.generated.MCTParser;

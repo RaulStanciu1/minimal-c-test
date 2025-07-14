@@ -1,4 +1,4 @@
-package io.github.raulstanciu1.models;
+package io.github.raulstanciu1.models.test;
 
 import java.util.ArrayList;
 import java.util.List;

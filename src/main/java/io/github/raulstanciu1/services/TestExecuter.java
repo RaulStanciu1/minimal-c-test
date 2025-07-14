@@ -1,12 +1,12 @@
 package io.github.raulstanciu1.services;
 
 
+import io.github.raulstanciu1.models.ProjectEnvironment;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 public class TestExecuter {
     public static int executeTest() throws IOException, InterruptedException {
@@ -18,19 +18,20 @@ public class TestExecuter {
 
         Process process = builder.start();
 
+        System.out.println("Compiling the test process...");
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        List<String> outputLogList = new ArrayList<>();
         String line;
         while((line = reader.readLine()) != null){
-            outputLogList.add(line);
+            System.out.println("PROCESS: "+line);
         }
 
         int exitCode = process.waitFor();
 
-        env.setOutputLog(outputLogList);
         if(exitCode != 0){
             return exitCode;
         }
+
+        System.out.println("Test process compiled successfully. Running the test process...");
 
         builder = new ProcessBuilder(outputDir+".\\___mct___.exe");
         builder.directory(outputDir.toFile());
